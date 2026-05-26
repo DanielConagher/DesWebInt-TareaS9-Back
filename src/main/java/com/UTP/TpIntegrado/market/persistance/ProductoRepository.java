@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 public class ProductoRepository implements ProductRepository {
 
-
     @Autowired
     private ProductoCrudRepository productoCrudRepository;
 
@@ -22,9 +21,8 @@ public class ProductoRepository implements ProductRepository {
     private ProductMapper mapper;
 
     @Override
-    public List<Product> getAll(){
-        List<Producto> productos  = (List<Producto>)
-                productoCrudRepository.findAll();
+    public List<Product> getAll() {
+        List<Producto> productos = (List<Producto>) productoCrudRepository.findAll();
         return mapper.toProducts(productos);
     }
 
@@ -45,17 +43,20 @@ public class ProductoRepository implements ProductRepository {
 
     @Override
     public Product save(Product product) {
-        return null;
+        Producto producto = mapper.toProducto(product);
+
+        Producto productoGuardado = productoCrudRepository.save(producto);
+
+        return mapper.toProduct(productoGuardado);
     }
 
-    public List<Producto> getByCategoria( int idCategoria){
+    public List<Producto> getByCategoria(int idCategoria) {
         return productoCrudRepository.findByIdCategoriaOrderByNombreAsc(idCategoria);
     }
 
     public Optional<List<Producto>> getEscasos(int cantidad) {
         return productoCrudRepository.findByCantidadStockLessThanAndEstado(cantidad, true);
     }
-
 
     public Optional<Producto> getProducto(int idProducto) {
         return productoCrudRepository.findById(idProducto);
@@ -68,7 +69,5 @@ public class ProductoRepository implements ProductRepository {
     public void delete(int idProducto) {
         productoCrudRepository.deleteById(idProducto);
     }
-
-
 
 }
